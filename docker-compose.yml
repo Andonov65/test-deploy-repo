@@ -1,0 +1,36 @@
+version: '3'
+services:
+  study-mate-ui:
+    container_name: ui
+    build: study-mate-ui
+    environment:
+      - REACT_APP_STUDY_MATE_API_BASE_URL=http://localhost/api/api
+    ports:
+      - 3000:3000
+    depends_on:
+      - study-mate-api
+  study-mate-api:
+    container_name: api
+    build: StudyMate.API
+    ports:
+      - 5000:5000
+    depends_on:
+      - study-mate-postgres
+  study-mate-postgres:
+    container_name: postgres
+    image: postgres:15.2-alpine
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=StudyMateDb
+  study-mate-nginx:
+    container_name: nginx
+    build: .
+    ports:
+      - 80:80
+      - 433:433
+    depends_on:
+      - study-mate-ui
+      - study-mate-api
